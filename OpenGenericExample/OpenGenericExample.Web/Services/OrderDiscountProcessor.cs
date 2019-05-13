@@ -1,4 +1,5 @@
-﻿using OpenGenericExample.Web.Models;
+﻿using OpenGenericExample.Web.Logging;
+using OpenGenericExample.Web.Models;
 using OpenGenericExample.Web.Services.Contracts;
 using System.Collections.Generic;
 
@@ -7,10 +8,12 @@ namespace OpenGenericExample.Web.Services
     public class OrderDiscountProcessor : IDiscountProcessor
     {
         private readonly IEnumerable<IDiscount> _discounts;
+        private readonly ILogWriter<OrderDiscountProcessor> _logWriter;
 
-        public OrderDiscountProcessor(IEnumerable<IDiscount> discounts)
+        public OrderDiscountProcessor(IEnumerable<IDiscount> discounts, ILogWriter<OrderDiscountProcessor> logWriter)
         {
             _discounts = discounts;
+            _logWriter = logWriter;
         }
 
         public (double, List<string>) ProcessDiscount(OrderViewModel order)
@@ -29,6 +32,7 @@ namespace OpenGenericExample.Web.Services
                 totalDiscount += addedDiscount;
             }
 
+            _logWriter.LogInfo($"Total discount of ${totalDiscount} is given");
             return (totalDiscount, discountDiscroptoons);
         }
     }
