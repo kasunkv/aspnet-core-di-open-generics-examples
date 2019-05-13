@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using OpenGenericExample.Web.Logging;
 using OpenGenericExample.Web.Services;
 using OpenGenericExample.Web.Services.Contracts;
 
@@ -30,6 +31,10 @@ namespace OpenGenericExample.Web
                 ServiceDescriptor.Scoped<IDiscount, LargeOrderDiscount>(),
                 ServiceDescriptor.Scoped<IDiscount, ThreeOrModeDiscount>()
             });
+
+            // Registering the ILogWriter and its implementation as Open Generics
+            services.AddScoped(typeof(ILogWriter<>), typeof(TraceLogWriter<>));
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
